@@ -54,6 +54,10 @@ define("tinymce/ui/Window", [
 
 			self._super(settings);
 
+			if (self.isRtl()) {
+				self.addClass('rtl');
+			}
+
 			self.addClass('window');
 			self._fixed = true;
 
@@ -65,7 +69,7 @@ define("tinymce/ui/Window", [
 					spacing: 3,
 					padding: 10,
 					align: 'center',
-					pack: 'end',
+					pack: self.isRtl() ? 'start' : 'end',
 					defaults: {
 						type: 'button'
 					},
@@ -144,8 +148,12 @@ define("tinymce/ui/Window", [
 			// Reserve vertical space for title
 			if (self.settings.title && !self._fullscreen) {
 				headEl = self.getEl('head');
-				layoutRect.headerW = headEl.offsetWidth;
-				layoutRect.headerH = headEl.offsetHeight;
+
+				var size = DomUtils.getSize(headEl);
+
+				layoutRect.headerW = size.width;
+				layoutRect.headerH = size.height;
+
 				deltaH += layoutRect.headerH;
 			}
 
