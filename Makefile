@@ -3,6 +3,9 @@
 # Used to install TinyMCE 4 into our source tree. We only include the
 # non-minified, compiled output. We will do our own minification.
 #
+# Because we convert css -> sass as part of the installation, you need
+# sass installed.
+#
 # [andy 14.Oct.2013]
 #
 
@@ -11,6 +14,7 @@ SRC=~/src/hg/jetty
 
 # Destination directory for TinyMCE 4
 TINYMCE=$(SRC)/html/js/tinymce4
+TINYSASS=$(SRC)/html/sass/tinymce4
 
 # Plugin list copied from js/traction/edit/tinymce/TinyMce.js
 PLUGINS=table paste charmap textcolor directionality noneditable contextmenu link code fullscreen
@@ -30,8 +34,8 @@ install:
 	@cp js/tinymce/tinymce.js $(TINYMCE)/tinymce.js
 
 	@echo "Installing TinyMCE 4 Skin - lightgray"
-	@cp -r js/tinymce/skins/lightgray $(TINYMCE)/skins
-	@rm $(TINYMCE)/skins/lightgray/*.less
+	sass-convert js/tinymce/skins/lightgray/skin.min.css $(TINYSASS)/_lightgray-skin.scss
+	sass-convert js/tinymce/skins/lightgray/content.min.css $(TINYSASS)/_lightgray-content.scss
 
 	@echo "Installing TinyMCE 4 Theme - modern"
 	@cp -r js/tinymce/themes/modern $(TINYMCE)/themes
