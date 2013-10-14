@@ -1,15 +1,15 @@
 // Button
 
 .mce-btn {
-	border: 1px solid mix(rgb(red(@btn-border-right), green(@btn-border-right), blue(@btn-border-right)), @panel-bg, 30%);
-	border-color: @btn-border-top @btn-border-right @btn-border-bottom @btn-border-left;
+	//border: 1px solid mix(rgb(red(@btn-border-right), green(@btn-border-right), blue(@btn-border-right)), @panel-bg, 30%);
+	//border-color: @btn-border-top @btn-border-right @btn-border-bottom @btn-border-left;
 	position: relative;
 	text-shadow: @text-shadow;
 
 	.inline-block();
 	.border-radius(3px);
 	.box-shadow(@btn-box-shadow);
-	.vertical-gradient(@btn-bg, @btn-bg-hlight);
+	//.vertical-gradient(@btn-bg, @btn-bg-hlight);
 
 	&:hover, &:focus {
 		color: @btn-text;
@@ -34,7 +34,8 @@
 }
 
 .mce-btn button {
-	padding: 4px 10px;
+	//padding: 4px 10px;
+	padding: 4px 6px;
 	font-size: @font-size;
 	line-height: @line-height;
 	*line-height: @line-height - 4px;
@@ -52,7 +53,7 @@
 }
 
 .mce-btn i {
-	text-shadow: 1px 1px @btn-text-shadow;
+	//text-shadow: 1px 1px @btn-text-shadow;
 }
 
 .mce-primary {
@@ -105,7 +106,8 @@
 }
 
 .mce-btn .mce-caret {
-	margin-top: 8px;
+	//margin-top: 8px;
+	margin-top: 6px;
 	*margin-top: 6px;
 	margin-left: 0;
 }
