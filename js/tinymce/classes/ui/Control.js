@@ -31,7 +31,8 @@ define("tinymce/ui/Control", [
 
 	var Control = Class.extend({
 		Statics: {
-			controlIdLookup: {}
+			controlIdLookup: {},
+			elementIdCache: elementIdCache
 		},
 
 		isRtl: function() {
@@ -693,6 +694,17 @@ define("tinymce/ui/Control", [
 			}
 
 			return args;
+		},
+
+		/**
+		 * Returns true/false if the specified event has any listeners.
+		 *
+		 * @method hasEventListeners
+		 * @param {String} name Name of the event to check for.
+		 * @return {Boolean} True/false state if the event has listeners.
+		 */
+		hasEventListeners: function(name) {
+			return name in this._bindings;
 		},
 
 		/**

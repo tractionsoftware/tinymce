@@ -161,8 +161,6 @@ define("tinymce/Editor", [
 			ie7_compat: true
 		}, settings);
 
-		self.rtl = settings.directionality == 'rtl';
-
 		AddOnManager.language = settings.language || 'en';
 		AddOnManager.languageLoad = settings.language_load;
 
@@ -471,6 +469,7 @@ define("tinymce/Editor", [
 			var self = this, settings = self.settings, elm = self.getElement();
 			var w, h, minHeight, n, o, url, bodyId, bodyClass, re, i, initializedPlugins = [];
 
+			self.rtl = this.editorManager.i18n.rtl;
 			self.editorManager.add(self);
 
 			settings.aria_label = settings.aria_label || DOM.getAttrib(elm, 'aria-label', self.getLang('aria.rich_text_area'));
@@ -1746,8 +1745,17 @@ define("tinymce/Editor", [
 			// Move selection to start of body if it's a after init setContent call
 			// This prevents IE 7/8 from moving focus to empty editors
 			if (!args.initial) {
-				self.selection.select(body, true);
-				self.selection.collapse(true);
+				var dom = self.dom, selection = self.selection;
+
+				// IE can't have the caret inside <body><p>|</p></body> unless we do some magic
+				if (ie < 11 && dom.isBlock(body.firstChild) && dom.isEmpty(body.firstChild)) {
+					body.firstChild.appendChild(dom.doc.createTextNode('\u00a0'));
+					selection.select(body.firstChild, true);
+					dom.remove(body.firstChild.lastChild);
+				} else {
+					selection.select(body, true);
+					selection.collapse(true);
+				}
 			}
 
 			return args.content;
@@ -2056,6 +2064,10 @@ define("tinymce/Editor", [
 
 		bindNative: function(name) {
 			var self = this;
+
+			if (self.settings.readonly) {
+				return;
+			}
 
 			if (self.initialized) {
 				self.dom.bind(getEventTarget(self, name), name, function(e) {

@@ -167,7 +167,11 @@ define("tinymce/dom/EventUtils", [], function() {
 
 		// Use W3C method
 		if (doc.addEventListener) {
-			addEvent(win, 'DOMContentLoaded', readyHandler);
+			if (doc.readyState === "complete") {
+				readyHandler();
+			} else {
+				addEvent(win, 'DOMContentLoaded', readyHandler);
+			}
 		} else {
 			// Use IE method
 			addEvent(doc, "readystatechange", waitForDomLoaded);
@@ -206,9 +210,9 @@ define("tinymce/dom/EventUtils", [], function() {
 		 * @param {String} id Expando id value to look for.
 		 */
 		function executeHandlers(evt, id) {
-			var callbackList, i, l, callback;
+			var callbackList, i, l, callback, container = events[id];
 
-			callbackList = events[id][evt.type];
+			callbackList = container && container[evt.type];
 			if (callbackList) {
 				for (i = 0, l = callbackList.length; i < l; i++) {
 					callback = callbackList[i];
