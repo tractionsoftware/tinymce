@@ -48,24 +48,11 @@
 	color: @menuitem-text-inverse;
 }
 
-.mce-menu-item .mce-caret {
-	margin-top: 4px;
-	*margin-top: 3px;
-	margin-right: 6px;
-	border-top: 4px solid transparent;
-	border-bottom: 4px solid transparent;
-	border-left: 4px solid @menuitem-caret;
-}
-
-.mce-menu-item.mce-selected .mce-caret, .mce-menu-item:focus .mce-caret, .mce-menu-item:hover .mce-caret {
-	border-left-color: @menuitem-caret-selected;
-}
-
 .mce-menu-align .mce-menu-shortcut {
 	*margin-top: -2px;
 }
 
-.mce-menu-align .mce-menu-shortcut, .mce-menu-align .mce-caret {
+.mce-menu-align .mce-menu-shortcut {
 	position: absolute;
 	right: 0;
 }
@@ -108,27 +95,3 @@ div.mce-menu .mce-menu-item-sep, .mce-menu-item-sep:hover {
 	filter: none;
 }
 
-// RTL
-
-.mce-rtl .mce-menu-item {
-	text-align: right;
-	direction: rtl;
-	padding: 6px 12px 6px 15px;
-}
-
-.mce-menu-align.mce-rtl .mce-menu-shortcut, .mce-menu-align.mce-rtl .mce-caret {
-	right: auto;
-	left: 0;
-}
-
-.mce-rtl .mce-menu-item .mce-caret {
-	margin-left: 6px;
-	margin-right: 0;
-	border-right: 4px solid @menuitem-caret;
-	border-left: 0;
-}
-
-.mce-rtl .mce-menu-item.mce-selected .mce-caret, .mce-rtl .mce-menu-item:focus .mce-caret, .mce-rtl .mce-menu-item:hover .mce-caret {
-	border-left-color: transparent;
-	border-right-color: @menuitem-caret-selected;
-}

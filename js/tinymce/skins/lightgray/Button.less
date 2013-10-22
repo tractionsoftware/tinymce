@@ -107,38 +107,3 @@
 	*line-height: 18px;
 }
 
-.mce-btn .mce-caret {
-	//margin-top: 8px;
-	margin-top: 6px;
-	margin-left: 0;
-}
-
-.mce-btn-small .mce-caret {
-	margin-top: 8px;
-	margin-left: 0;
-}
-
-.mce-caret {
-	.inline-block();
-	width: 0; height: 0;
-	vertical-align: top;
-	border-top: 4px solid @btn-caret-border;
-	border-right: 4px solid transparent;
-	border-left: 4px solid transparent;
-	content: "";
-}
-
-.mce-disabled .mce-caret {
-	border-top-color: @text-disabled;
-}
-
-.mce-caret.mce-up {
-	border-bottom: 4px solid @btn-caret-border;
-	border-top: 0;
-}
-
-// RTL
-
-.mce-rtl .mce-btn button {
-	direction: rtl;
-}
