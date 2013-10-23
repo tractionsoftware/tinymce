@@ -29,9 +29,10 @@ install:
 	-@mkdir $(TINYMCE)/themes
 	-@mkdir $(TINYMCE)/skins
 	-@mkdir $(TINYMCE)/plugins
+	-@mkdir $(TINYMCE)/src
 
 	@echo "Installing TinyMCE 4 Core"
-	@cp js/tinymce/tinymce.js $(TINYMCE)/tinymce.js
+	@cp js/tinymce/tinymce.js $(TINYMCE)/src/tinymce.js
 
 	@echo "Installing TinyMCE 4 Skin - lightgray"
 	sass-convert js/tinymce/skins/lightgray/skin.min.css $(TINYSASS)/_lightgray-skin.scss
