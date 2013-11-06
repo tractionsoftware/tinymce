@@ -171,7 +171,8 @@ define("tinymce/EditorCommands", [
 				if (failed || !doc.queryCommandSupported(command)) {
 					editor.windowManager.alert(
 						"Your browser doesn't support direct access to the clipboard. " +
-						"Please use the Ctrl+X/C/V keyboard shortcuts instead."
+						"Please use the " + (Env.mac ? 'Command' : 'Ctrl') +
+						"+X/C/V keyboard shortcuts instead."
 					);
 				}
 			},
@@ -341,7 +342,7 @@ define("tinymce/EditorCommands", [
 				// Setup parser and serializer
 				parser = editor.parser;
 				serializer = new Serializer({}, editor.schema);
-				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
+				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;&#200B;</span>';
 
 				// Run beforeSetContent handlers on the HTML to be inserted
 				args = {content: value, format: 'html', selection: true};
