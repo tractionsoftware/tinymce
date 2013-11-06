@@ -171,9 +171,7 @@ define("tinymce/EditorCommands", [
 				if (failed || !doc.queryCommandSupported(command)) {
 					editor.windowManager.alert(
 						"Your browser doesn't support direct access to the clipboard. " +
-						"Please use the " +
-						((Env.mac && editor.settings.mac_ctrl_key !== 'ctrl') ? 'Cmd+' : 'Ctrl+') +
-						"X/C/V keyboard shortcuts instead."
+						"Please use the Ctrl+X/C/V keyboard shortcuts instead."
 					);
 				}
 			},
