@@ -224,13 +224,13 @@ define("tinymce/ui/MenuItem", [
 				image = ' style="background-image: url(\'' + settings.image + '\')"';
 			}
 
-                        if (shortcut && Env.mac) {
+			if (shortcut && Env.mac) {
 				// format shortcut for Mac
 				shortcut = shortcut.replace(/ctrl\+alt\+/i, '&#x2325;&#x2318;'); // ctrl+cmd
 				shortcut = shortcut.replace(/ctrl\+/i, '&#x2318;'); // ctrl symbol
 				shortcut = shortcut.replace(/alt\+/i, '&#x2325;'); // cmd symbol
 				shortcut = shortcut.replace(/shift\+/i, '&#x21E7;'); // shift symbol
-                        }
+			}
 
 			icon = prefix + 'ico ' + prefix + 'i-' + (self.settings.icon || 'none');
 
