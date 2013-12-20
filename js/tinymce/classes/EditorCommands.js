@@ -169,22 +169,31 @@ define("tinymce/EditorCommands", [
 
 				// Present alert message about clipboard access not being available
 				if (failed || !doc.queryCommandSupported(command)) {
-					editor.windowManager.alert(
+					var msg = editor.translate(
 						"Your browser doesn't support direct access to the clipboard. " +
-						"Please use the " + (Env.mac ? 'Command' : 'Ctrl') +
-						"+X/C/V keyboard shortcuts instead."
+						"Please use the Ctrl+X/C/V keyboard shortcuts instead."
 					);
+
+					if (Env.mac) {
+						msg = msg.replace(/Ctrl\+/g, '\u2318+');
+					}
+
+					editor.windowManager.alert(msg);
 				}
 			},
 
 			// Override unlink command
-			unlink: function(command) {
+			unlink: function() {
 				if (selection.isCollapsed()) {
-					selection.select(selection.getNode());
+					var elm = selection.getNode();
+					if (elm.tagName == 'A') {
+						editor.dom.remove(elm, true);
+					}
+
+					return;
 				}
 
-				execNativeCommand(command);
-				selection.collapse(FALSE);
+				formatter.remove("link");
 			},
 
 			// Override justify commands to use the text formatter engine
