@@ -53,11 +53,13 @@ define("tinymce/tableplugin/Plugin", [
 			createNewTable = false;
 
 			data = {
+				bgcolor: dom.getStyle(tableElm, 'backgroundColor') || dom.getAttrib(tableElm, 'bgcolor'),
+				bordercolor: dom.getStyle(tableElm, 'borderLeftColor') || dom.getAttrib(tableElm, 'bordercolor'),
 				width: removePxSuffix(dom.getStyle(tableElm, 'width') || dom.getAttrib(tableElm, 'width')),
 				height: removePxSuffix(dom.getStyle(tableElm, 'height') || dom.getAttrib(tableElm, 'height')),
 				cellspacing: dom.getAttrib(tableElm, 'cellspacing'),
 				cellpadding: dom.getAttrib(tableElm, 'cellpadding'),
-				border: dom.getAttrib(tableElm, 'border'),
+				borderwidth: removePxSuffix(dom.getStyle(tableElm, 'borderLeftWidth') || dom.getAttrib(tableElm, 'border')),
 				caption: !!dom.select('caption', tableElm)[0]
 			};
 
@@ -85,7 +87,6 @@ define("tinymce/tableplugin/Plugin", [
 						{label: 'Height', name: 'height'},
 						{label: 'Cell spacing', name: 'cellspacing'},
 						{label: 'Cell padding', name: 'cellpadding'},
-						{label: 'Border', name: 'border'},
 						{label: 'Caption', name: 'caption', type: 'checkbox'},
 						{
 							label: 'Alignment',
@@ -100,7 +101,10 @@ define("tinymce/tableplugin/Plugin", [
 								{text: 'Center', value: 'center'},
 								{text: 'Right', value: 'right'}
 							]
-						}
+						},
+						{label: 'Border color', name: 'bordercolor'},
+						{label: 'Border width', name: 'borderwidth'},
+						{label: 'Background color', name: 'bgcolor'}
 					]
 				},
 
@@ -110,15 +114,34 @@ define("tinymce/tableplugin/Plugin", [
 					editor.undoManager.transact(function() {
 						editor.dom.setAttribs(tableElm, {
 							cellspacing: data.cellspacing,
-							cellpadding: data.cellpadding,
-							border: data.border
+							cellpadding: data.cellpadding
 						});
 
 						editor.dom.setStyles(tableElm, {
+							'background-color': data.bgcolor,
 							width: addSizeSuffix(data.width),
 							height: addSizeSuffix(data.height)
 						});
 
+						var borderwidth;
+						if (data.borderwidth) {
+							borderwidth = parseInt(removePxSuffix(data.borderwidth), 10);
+						}
+						else {
+							borderwidth = data.bordercolor ? 1 : 0;
+						}
+						if (borderwidth > 0) {
+							editor.dom.setStyles(tableElm, {
+								border: addSizeSuffix(borderwidth) + ' solid ' +
+									(data.bordercolor || '#000')
+							});
+						}
+						else {
+							editor.dom.setStyles(tableElm, {
+								border: ''
+							});
+						}
+                                                
 						// Toggle caption on/off
 						captionElm = dom.select('caption', tableElm)[0];
 
@@ -174,6 +197,8 @@ define("tinymce/tableplugin/Plugin", [
 			cellElm = cellElm || cells[0];
 
 			data = {
+				bgcolor: dom.getStyle(cellElm, 'backgroundColor') || dom.getAttrib(cellElm, 'bgcolor'),
+				bordercolor: dom.getStyle(cellElm, 'borderLeftColor') || dom.getAttrib(cellElm, 'bordercolor'),
 				width: removePxSuffix(dom.getStyle(cellElm, 'width') || dom.getAttrib(cellElm, 'width')),
 				height: removePxSuffix(dom.getStyle(cellElm, 'height') || dom.getAttrib(cellElm, 'height')),
 				scope: dom.getAttrib(cellElm, 'scope')
@@ -199,6 +224,8 @@ define("tinymce/tableplugin/Plugin", [
 						maxWidth: 50
 					},
 					items: [
+						{label: 'Background Color', name: 'bgcolor'},
+						{label: 'Border Color', name: 'bordercolor'},
 						{label: 'Width', name: 'width'},
 						{label: 'Height', name: 'height'},
 						{
@@ -253,6 +280,8 @@ define("tinymce/tableplugin/Plugin", [
 							editor.dom.setAttrib(cellElm, 'scope', data.scope);
 
 							editor.dom.setStyles(cellElm, {
+								'background-color': data.bgcolor,
+								border: data.bordercolor ? '1px solid ' + data.bordercolor : '',
 								width: addSizeSuffix(data.width),
 								height: addSizeSuffix(data.height)
 							});
@@ -293,6 +322,7 @@ define("tinymce/tableplugin/Plugin", [
 			rowElm = rows[0];
 
 			data = {
+				bgcolor: dom.getStyle(rowElm, 'backgroundColor') || dom.getAttrib(rowElm, 'bgcolor'),
 				height: removePxSuffix(dom.getStyle(rowElm, 'height') || dom.getAttrib(rowElm, 'height')),
 				scope: dom.getAttrib(rowElm, 'scope')
 			};
@@ -315,6 +345,7 @@ define("tinymce/tableplugin/Plugin", [
 						type: 'textbox'
 					},
 					items: [
+						{label: 'Background Color', name: 'bgcolor'},
 						{
 							type: 'listbox',
 							name: 'type',
@@ -354,6 +385,7 @@ define("tinymce/tableplugin/Plugin", [
 							editor.dom.setAttrib(rowElm, 'scope', data.scope);
 
 							editor.dom.setStyles(rowElm, {
+								'background-color': data.bgcolor,
 								height: addSizeSuffix(data.height)
 							});
 
