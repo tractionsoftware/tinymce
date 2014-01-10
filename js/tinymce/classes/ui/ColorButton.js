@@ -45,13 +45,24 @@ define("tinymce/ui/ColorButton", [
 		 * @return {String|tinymce.ui.ColorButton} Current color or current instance.
 		 */
 		color: function(color) {
-			if (color) {
+			if (typeof color != 'undefined') {
 				this._color = color;
 				this.getEl('preview').style.backgroundColor = color;
 				return this;
 			}
 
 			return this._color;
+		},
+
+		/**
+		 * Getter/setter function for the value state.
+		 *
+		 * @method value
+		 * @param {String} [color] Color to be set.
+		 * @return {String|tinymce.ui.ColorButton} color or the colorbutton if it's a set operation.
+		 */
+		value: function(state) {
+			return this.color(state);
 		},
 
 		/**
