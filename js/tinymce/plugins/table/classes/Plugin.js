@@ -89,7 +89,7 @@ define("tinymce/tableplugin/Plugin", [
 				"EEDDFF", "",
 				"FFFFFF", "White",
 
-				"", ""
+				"", "",
 			];
 
 			for (i = 0; i < colorMap.length; i += 2) {
@@ -578,15 +578,19 @@ define("tinymce/tableplugin/Plugin", [
 		}
 
 		function insertTable(cols, rows) {
-			var y, x, html;
+			var y, x, html, defaultTableStyle = "border: 1px solid #808080;", defaultTdStyle = "border: 1px solid #999999;";
 
-			html = '<table><tbody>';
+			function styleAttributes(defaultStyle) {
+				return ' style="' + defaultStyle + '" data-mce-style="' + defaultStyle + '"';
+			}
+
+			html = '<table' + styleAttributes(defaultTableStyle) + '><tbody>';
 
 			for (y = 0; y < rows; y++) {
 				html += '<tr>';
 
 				for (x = 0; x < cols; x++) {
-					html += '<td>' + (Env.ie ? " " : '<br>') + '</td>';
+					html += '<td' + styleAttributes(defaultTdStyle) + '>' + (Env.ie ? " " : '<br>') + '</td>';
 				}
 
 				html += '</tr>';
