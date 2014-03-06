@@ -89,7 +89,7 @@ define("tinymce/tableplugin/Plugin", [
 				"EEDDFF", "",
 				"FFFFFF", "White",
 
-				"", "",
+				"", ""
 			];
 
 			for (i = 0; i < colorMap.length; i += 2) {
