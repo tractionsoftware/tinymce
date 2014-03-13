@@ -40,7 +40,7 @@ define("tinymce/html/Schema", [
 	 * @return {Object} Schema lookup table.
 	 */
 	function compileSchema(type) {
-		var schema = {}, globalAttributes, eventAttributes, blockContent;
+		var schema = {}, globalAttributes, blockContent;
 		var phrasingContent, flowContent, html4BlockContent, html4PhrasingContent;
 
 		function add(name, attributes, children) {
@@ -108,13 +108,13 @@ define("tinymce/html/Schema", [
 		globalAttributes = split("id accesskey class dir lang style tabindex title");
 
 		// Event attributes can be opt-in/opt-out
-		eventAttributes = split("onabort onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncuechange " +
+		/*eventAttributes = split("onabort onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncuechange " +
 				"ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended " +
 				"onerror onfocus oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart " +
 				"onmousedown onmousemove onmouseout onmouseover onmouseup onmousewheel onpause onplay onplaying onprogress onratechange " +
 				"onreset onscroll onseeked onseeking onseeking onselect onshow onstalled onsubmit onsuspend ontimeupdate onvolumechange " +
 				"onwaiting"
-		);
+		);*/
 
 		// Block content elements
 		blockContent = split(
@@ -376,7 +376,7 @@ define("tinymce/html/Schema", [
 		textBlockElementsMap = createLookupTable('text_block_elements', 'h1 h2 h3 h4 h5 h6 p div address pre form ' +
 						'blockquote center dir fieldset header footer article section hgroup aside nav figure');
 		blockElementsMap = createLookupTable('block_elements', 'hr table tbody thead tfoot ' +
-						'th tr td li ol ul caption dl dt dd noscript menu isindex samp option ' +
+						'th tr td li ol ul caption dl dt dd noscript menu isindex option ' +
 						'datalist select optgroup', textBlockElementsMap);
 
 		each((settings.special || 'script noscript style textarea').split(' '), function(name) {
@@ -890,7 +890,7 @@ define("tinymce/html/Schema", [
 
 		/**
 		 * Parses a valid elements string and adds it to the schema. The valid elements
-		  format is for example "element[attr=default|otherattr]".
+		 * format is for example "element[attr=default|otherattr]".
 		 * Existing rules will be replaced with the ones specified, so this extends the schema.
 		 *
 		 * @method addValidElements

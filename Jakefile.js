@@ -9,10 +9,11 @@ var instrumentFile = require('./tools/BuildTools').instrumentFile;
 var glob = require("glob");
 var path = require("path");
 var fs = require("fs");
-var exec = require("child_process").exec;
+var eslint = require('./tools/BuildTools').eslint;
+var nuget = require('./tools/BuildTools').nuget;
 
 desc("Default build task");
-task("default", ["minify", "less", "jshint"], function () {});
+task("default", ["minify", "less"], function () {});
 
 desc("Minify all JS files");
 task("minify", [
@@ -212,7 +213,131 @@ task("bundle", ["minify"], function(params) {
 	fs.writeFileSync("js/tinymce/tinymce.full.min.js", minContent);
 });
 
-desc("Runs JSHint on core source files");
+desc("Bundles in plugins/themes without minifying into a tinymce.full.js file");
+task("bundle-full", ["default"], function (params) {
+  var inputFiles, fullContent, addPlugins = true;
+
+  function appendAddon (name) {
+    if (addPlugins) {
+      if (name == '*') {
+        glob.sync('js/tinymce/plugins/*/plugin.js').forEach(function (filePath) {
+          fullContent += "\n;" + fs.readFileSync(filePath).toString();
+        });
+      } else {
+        fullContent += "\n;" + fs.readFileSync("js/tinymce/plugins/" + name + "/plugin.js").toString();
+      }
+    } else {
+      if (name == '*') {
+        glob.sync('js/tinymce/themes/*/theme.min.js').forEach(function (filePath) {
+          fullContent += "\n;" + fs.readFileSync(filePath).toString();
+        });
+      } else {
+        fullContent += "\n;" + fs.readFileSync("js/tinymce/themes/" + name + "/theme.js").toString();
+      }
+    }
+  }
+
+  fullContent = fs.readFileSync("js/tinymce/tinymce.js").toString();
+
+  if (arguments[0] == '*') {
+    arguments = ['themes:*', 'plugins:*'];
+  }
+
+  for (var i = 0; i < arguments.length; i++) {
+    var args = arguments[i].split(':');
+
+    if (args[0] == 'plugins') {
+      addPlugins = true;
+    } else if (args[0] == 'themes') {
+      addPlugins = false;
+    }
+
+    appendAddon(args[1] || args[0]);
+  }
+
+  fs.writeFileSync("js/tinymce/tinymce.full.js", fullContent);
+});
+
+desc("Bundles in the plugins/themes without minifying, including jQuery into a tinymce.jquery.full.js file");
+task("bundle-full-jquery", ["default"], function (params) {
+	var inputFiles, fullContent, addPlugins = true;
+
+	function appendAddon (name) {
+		if (addPlugins) {
+			if (name == '*') {
+				glob.sync('js/tinymce/plugins/*/plugin.js').forEach(function (filePath) {
+					fullContent += "\n;" + fs.readFileSync(filePath).toString();
+				});
+			} else {
+				fullContent += "\n;" + fs.readFileSync("js/tinymce/plugins/" + name + "/plugin.js").toString();
+			}
+		} else {
+			if (name == '*') {
+				glob.sync('js/tinymce/themes/*/theme.min.js').forEach(function (filePath) {
+					fullContent += "\n;" + fs.readFileSync(filePath).toString();
+				});
+			} else {
+				fullContent += "\n;" + fs.readFileSync("js/tinymce/themes/" + name + "/theme.js").toString();
+			}
+		}
+	}
+
+	fullContent = fs.readFileSync("js/tinymce/tinymce.jquery.js").toString();
+
+	if (arguments[0] == '*') {
+		arguments = ['themes:*', 'plugins:*'];
+	}
+
+	for (var i = 0; i < arguments.length; i++) {
+		var args = arguments[i].split(':');
+
+		if (args[0] == 'plugins') {
+			addPlugins = true;
+		} else if (args[0] == 'themes') {
+			addPlugins = false;
+		}
+
+		appendAddon(args[1] || args[0]);
+	}
+
+	fs.writeFileSync("js/tinymce/tinymce.jquery.full.js", fullContent);
+});
+
+desc("Runs ESLint on all source files");
+task("eslint", ["eslint-core", "eslint-themes", "eslint-plugins"]);
+
+desc("Runs ESLint on core");
+task("eslint-core", [], function() {
+	eslint({
+		src: [
+			"js/tinymce/classes/**/*.js"
+		]
+	});
+});
+
+desc("Runs ESLint on themes");
+task("eslint-themes", [], function() {
+	eslint({
+		src: [
+			"js/tinymce/themes/**/theme.js"
+		]
+	});
+});
+
+desc("Runs ESLint on plugins");
+task("eslint-plugins", [], function() {
+	eslint({
+		src: [
+			"js/tinymce/plugins/**/plugin.js",
+			"js/tinymce/plugins/**/classes/*.js",
+			"!js/tinymce/plugins/table/plugin.js",
+			"!js/tinymce/plugins/paste/plugin.js",
+			"!js/tinymce/plugins/spellchecker/plugin.js"
+		]
+	});
+});
+
+desc("Runs JSHint on all source files");
 task("jshint", ["jshint-core", "jshint-plugins", "jshint-themes"], function () {});
 
 desc("Runs JSHint on core source files");
@@ -254,6 +379,10 @@ task("less", [], function () {
 	].concat(parseLessDocs("js/tinymce/tinymce.js"));
 
 	fs.readdirSync("js/tinymce/skins").forEach(function(skinName) {
+		if (skinName.charAt(0) == '.') {
+			return;
+		}
+
 		// Modern browsers
 		less({
 			baseDir: "js/tinymce/skins/" + skinName + "",
@@ -289,15 +418,17 @@ task("less", [], function () {
 	});
 });
 
-desc("Builds release packages as zip files");
-task("release", ["default", "nuget", "zip-production", "zip-production-jquery", "zip-development"], function (params) {});
-
-task("zip-production", [], function () {
-	var details = getReleaseDetails("changelog.txt");
-
+task("mktmp", [], function() {
 	if (!fs.existsSync("tmp")) {
 		fs.mkdirSync("tmp");
 	}
+});
+
+desc("Builds release packages as zip files");
+task("release", ["default", "nuget", "zip-production", "zip-production-jquery", "zip-development", "jshint", "eslint"]);
+
+task("zip-production", ["mktmp"], function () {
+	var details = getReleaseDetails("changelog.txt");
 
 	zip({
 		baseDir: "tinymce",
@@ -305,10 +436,12 @@ task("zip-production", [], function () {
 		exclude: [
 			"js/tinymce/tinymce.js",
 			"js/tinymce/tinymce.dev.js",
+      "js/tinymce/tinymce.full.js",
 			"js/tinymce/tinymce.full.min.js",
 			"js/tinymce/tinymce.jquery.js",
 			"js/tinymce/tinymce.jquery.min.js",
 			"js/tinymce/tinymce.jquery.dev.js",
+			"js/tinymce/tinymce.jquery.full.js",
 			"js/tinymce/jquery.tinymce.min.js",
 			"js/tinymce/plugins/visualblocks/img",
 			"js/tinymce/plugins/compat3x",
@@ -331,12 +464,8 @@ task("zip-production", [], function () {
 	});
 });
 
-task("zip-production-jquery", [], function () {
+task("zip-production-jquery", ["mktmp"], function () {
 	var details = getReleaseDetails("changelog.txt");
-
-	if (!fs.existsSync("tmp")) {
-		fs.mkdirSync("tmp");
-	}
 
 	zip({
 		baseDir: "tinymce",
@@ -351,9 +480,11 @@ task("zip-production-jquery", [], function () {
 			"js/tinymce/tinymce.js",
 			"js/tinymce/tinymce.min.js",
 			"js/tinymce/tinymce.dev.js",
+      "js/tinymce/tinymce.full.js",
 			"js/tinymce/tinymce.full.min.js",
 			"js/tinymce/tinymce.jquery.js",
 			"js/tinymce/tinymce.jquery.dev.js",
+			"js/tinymce/tinymce.jquery.full.js",
 			"js/tinymce/plugins/visualblocks/img",
 			"js/tinymce/plugins/compat3x",
 			"readme.md",
@@ -375,12 +506,8 @@ task("zip-production-jquery", [], function () {
 	});
 });
 
-task("zip-development", [], function () {
+task("zip-development", ["mktmp"], function () {
 	var details = getReleaseDetails("changelog.txt");
-
-	if (!fs.existsSync("tmp")) {
-		fs.mkdirSync("tmp");
-	}
 
 	zip({
 		baseDir: "tinymce",
@@ -405,19 +532,15 @@ task("zip-development", [], function () {
 	});
 });
 
-task("nuget", [], function () {
+task("nuget", ["mktmp"], function () {
 	var details = getReleaseDetails("changelog.txt");
 
-	exec("NuGet.exe pack tools/nuget/TinyMCE.nuspec -Version " + details.version + " -OutputDirectory tmp", function (error, stdout, stderr) {
-		if (error !== null) {
-			console.log('exec error: ' + error);
-		}
-	});
-
-	exec("NuGet.exe pack tools/nuget/TinyMCE.jquery.nuspec -Version " + details.version + " -OutputDirectory tmp", function (error, stdout, stderr) {
-		if (error !== null) {
-			console.log('exec error: ' + error);
-		}
+	nuget({
+		cmd: 'tmp/nuget.exe',
+		nuspec: ['tools/nuget/TinyMCE.nuspec', 'tools/nuget/TinyMCE.jquery.nuspec'],
+		version: details.version,
+		dest: 'tmp',
+		quiet: true
 	});
 });
 
