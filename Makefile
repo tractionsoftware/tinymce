@@ -10,7 +10,7 @@
 #
 
 # Your TeamPage source tree
-SRC=~/src/hg/jetty
+SRC=~/src/traction/teampage
 
 # Destination directory for TinyMCE 4
 TINYMCE=$(SRC)/html/js/tinymce4
@@ -32,7 +32,7 @@ install:
 	-@mkdir $(TINYMCE)/src
 
 	@echo "Installing TinyMCE 4 Core"
-	@cp js/tinymce/tinymce.js $(TINYMCE)/src/tinymce.js
+	cp js/tinymce/tinymce.js $(TINYMCE)/src/tinymce.js
 
 	@echo "Installing TinyMCE 4 Skin - lightgray"
 	sass-convert js/tinymce/skins/lightgray/skin.min.css $(TINYSASS)/_lightgray-skin.scss
