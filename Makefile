@@ -17,10 +17,10 @@ TINYMCE=$(SRC)/html/js/tinymce4
 TINYSASS=$(SRC)/html/sass/tinymce4
 
 # Plugin list copied from js/traction/edit/tinymce/TinyMce.js
-PLUGINS=lists table paste charmap textcolor directionality noneditable contextmenu code fullscreen
+PLUGINS=lists table paste charmap textcolor directionality noneditable contextmenu code fullscreen pagebreak
 
 # Files that we don't need that are removed after we install
-GARBAGE=skins/lightgray/fonts themes/modern/theme.min.js 
+GARBAGE=skins/lightgray/fonts themes/modern/theme.min.js
 
 install:
 	@echo "Recreating TinyMCE 4 Installation Directories"
