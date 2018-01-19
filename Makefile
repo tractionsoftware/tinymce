@@ -10,17 +10,17 @@
 #
 
 # Your TeamPage source tree
-SRC=~/src/hg/jetty
+SRC=~/src/traction/teampage
 
 # Destination directory for TinyMCE 4
 TINYMCE=$(SRC)/html/js/tinymce4
 TINYSASS=$(SRC)/html/sass/tinymce4
 
 # Plugin list copied from js/traction/edit/tinymce/TinyMce.js
-PLUGINS=table paste charmap textcolor directionality noneditable contextmenu code fullscreen pagebreak
+PLUGINS=lists table paste charmap textcolor directionality noneditable contextmenu code fullscreen pagebreak
 
 # Files that we don't need that are removed after we install
-GARBAGE=skins/lightgray/fonts themes/modern/theme.min.js 
+GARBAGE=skins/lightgray/fonts themes/modern/theme.min.js
 
 install:
 	@echo "Recreating TinyMCE 4 Installation Directories"
@@ -32,7 +32,7 @@ install:
 	-@mkdir $(TINYMCE)/src
 
 	@echo "Installing TinyMCE 4 Core"
-	@cp js/tinymce/tinymce.js $(TINYMCE)/src/tinymce.js
+	cp js/tinymce/tinymce.js $(TINYMCE)/src/tinymce.js
 
 	@echo "Installing TinyMCE 4 Skin - lightgray"
 	sass-convert js/tinymce/skins/lightgray/skin.min.css $(TINYSASS)/_lightgray-skin.scss
